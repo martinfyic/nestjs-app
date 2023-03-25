@@ -12,6 +12,7 @@ import {
 import { CreateProductDTO } from './dto/product.dto';
 import { ProductService } from './product.service';
 import { Product } from './interfaces/product.interface';
+import { isValidMongoId } from '../utils/idValidator';
 
 @Controller('product')
 export class ProductController {
@@ -65,6 +66,11 @@ export class ProductController {
     @Param('productID') productID,
   ): Promise<{ message: string; products: Product[] }> {
     try {
+      if (!isValidMongoId(productID)) {
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          message: `Invalid product ID: ${productID}`,
+        });
+      }
       const product = await this.productService.getProduct(productID);
       if (!product) {
         return res.status(HttpStatus.NOT_FOUND).json({
@@ -88,6 +94,11 @@ export class ProductController {
     @Param('productID') productID,
   ): Promise<{ message: string; products: Product[] }> {
     try {
+      if (!isValidMongoId(productID)) {
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          message: `Invalid product ID: ${productID}`,
+        });
+      }
       const deletedProduct = await this.productService.deleteProduct(productID);
       if (!deletedProduct) {
         return res.status(HttpStatus.NOT_FOUND).json({
@@ -112,6 +123,11 @@ export class ProductController {
     @Body() data,
   ): Promise<{ message: string; products: Product[] }> {
     try {
+      if (!isValidMongoId(productID)) {
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          message: `Invalid product ID: ${productID}`,
+        });
+      }
       const productUpdated = await this.productService.updateProduct(
         productID,
         data,
