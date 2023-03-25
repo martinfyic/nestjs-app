@@ -17,17 +17,26 @@ import { isValidMongoId } from '../utils/idValidator';
 @Controller('product')
 export class ProductController {
   constructor(private productService: ProductService) {}
+
   @Post('/create')
   async createProduct(
     @Res() res,
     @Body() createProductDTO: CreateProductDTO,
   ): Promise<{ message: string; products: Product[] }> {
     try {
+      const { title, price, imageURL, stock } = createProductDTO;
+      if (!title || !price || !imageURL || !stock) {
+        return res.status(HttpStatus.BAD_REQUEST).json({
+          message:
+            'BAD REQUEST, required fields: "title", "price", "imageURL", "stock"',
+          dataReceived: createProductDTO,
+        });
+      }
       const newProduct = await this.productService.createProduct(
         createProductDTO,
       );
       return res.status(HttpStatus.CREATED).json({
-        message: 'success',
+        message: 'SUCCESS',
         newProduct,
       });
     } catch (error) {
@@ -50,7 +59,7 @@ export class ProductController {
         });
       }
       return res.status(HttpStatus.OK).json({
-        message: 'success',
+        message: 'SUCCESS',
         products,
       });
     } catch (error) {
@@ -78,7 +87,7 @@ export class ProductController {
         });
       }
       return res.status(HttpStatus.OK).json({
-        message: 'success',
+        message: 'SUCCESS',
         product,
       });
     } catch (error) {
@@ -92,7 +101,7 @@ export class ProductController {
   async deletedProduct(
     @Res() res,
     @Param('productID') productID,
-  ): Promise<{ message: string; products: Product[] }> {
+  ): Promise<{ message: string }> {
     try {
       if (!isValidMongoId(productID)) {
         return res.status(HttpStatus.BAD_REQUEST).json({
@@ -106,7 +115,7 @@ export class ProductController {
         });
       }
       return res.status(HttpStatus.OK).json({
-        message: 'deleted',
+        message: 'DELETED',
         deletedProduct,
       });
     } catch (error) {
@@ -138,7 +147,7 @@ export class ProductController {
         });
       }
       return res.status(HttpStatus.OK).json({
-        message: 'updated',
+        message: 'UPDATED',
         productUpdated,
       });
     } catch (error) {
