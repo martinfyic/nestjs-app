@@ -82,7 +82,7 @@ export class ProductController {
     }
   }
 
-  @Delete('/:productID')
+  @Delete('/delete/:productID')
   async deletedProduct(
     @Res() res,
     @Param('productID') productID,
@@ -105,7 +105,7 @@ export class ProductController {
     }
   }
 
-  @Put('/:productID')
+  @Put('/update/:productID')
   async updateProduct(
     @Res() res,
     @Param('productID') productID,
